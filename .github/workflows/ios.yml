@@ -1,5 +1,5 @@
   
-name: Build project on push
+name: ios_build
 
 on: [push]
 
