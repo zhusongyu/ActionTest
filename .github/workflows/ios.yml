@@ -12,7 +12,7 @@ jobs:
             destination: ['platform=iOS Simulator,OS=13.2.2,name=iPhone 11']
     steps:
     - uses: actions/checkout@master
-#     - uses: ./.github/actions/hello-world-action
+    - uses: ./.github/actions/hello-world-action
     - name: Build and test
       run: |
          xcodebuild clean test -project ActionTest.xcodeproj -scheme ActionTest -destination "${destination}" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO
