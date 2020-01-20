@@ -12,9 +12,32 @@ jobs:
             destination: ['platform=iOS Simulator,OS=13.2.2,name=iPhone 11']
     steps:
     - uses: actions/checkout@master
-#     - uses: ./.github/actions/hello-world-action
-    - name: Build and test
-      run: |
-         xcodebuild clean test -project ActionTest.xcodeproj -scheme ActionTest -destination "${destination}" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO
-      env:
-         destination: ${{ matrix.destination }}
+    - name: Setup SSH Keys and known_hosts for fastlane match
+           env:
+             PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+           #  Copied from https://github.com/maddox/actions/blob/master/ssh/entrypoint.sh
+           run: |
+             SSH_PATH="$HOME/.ssh"
+
+             mkdir -p "$SSH_PATH"
+             touch "$SSH_PATH/known_hosts"
+
+             echo "$PRIVATE_KEY" > "$SSH_PATH/id_rsa"
+
+             chmod 700 "$SSH_PATH"
+             ssh-keyscan github.com >> ~/.ssh/known_hosts
+             chmod 600 "$SSH_PATH/known_hosts"
+             chmod 600 "$SSH_PATH/id_rsa"
+
+             eval $(ssh-agent)
+             ssh-add "$SSH_PATH/id_rsa"
+
+         - name: fastlane build and testflight deploy
+           if: "!startsWith(github.event.head_commit.message, 'build') || !contains(github.event.head_commit.message, '***NO_CI***')"
+           uses: maierj/fastlane-action@v0.10.0
+           with:
+             lane: 'pgy'
+             subdirectory: 'ios'
+           env:
+             MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+             FASTLANE_PASSWORD: ${{ secrets.FASTLANE_PASSWORD }}
