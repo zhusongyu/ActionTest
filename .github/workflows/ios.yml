@@ -13,10 +13,10 @@ jobs:
     steps:
     - uses: actions/checkout@master
     - name: Setup SSH Keys and known_hosts for fastlane match
-           env:
-             PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      env:
+         PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
            #  Copied from https://github.com/maddox/actions/blob/master/ssh/entrypoint.sh
-           run: |
+      run: |
              SSH_PATH="$HOME/.ssh"
 
              mkdir -p "$SSH_PATH"
@@ -32,12 +32,12 @@ jobs:
              eval $(ssh-agent)
              ssh-add "$SSH_PATH/id_rsa"
 
-         - name: fastlane build and testflight deploy
-           if: "!startsWith(github.event.head_commit.message, 'build') || !contains(github.event.head_commit.message, '***NO_CI***')"
-           uses: maierj/fastlane-action@v0.10.0
-           with:
-             lane: 'pgy'
-             subdirectory: 'ios'
-           env:
-             MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
-             FASTLANE_PASSWORD: ${{ secrets.FASTLANE_PASSWORD }}
+    - name: fastlane build and testflight deploy
+      if: "!startsWith(github.event.head_commit.message, 'build') || !contains(github.event.head_commit.message, '***NO_CI***')"
+      uses: maierj/fastlane-action@v0.10.0
+      with:
+        lane: 'pgy'
+        subdirectory: 'ios'
+      env:
+        MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+        FASTLANE_PASSWORD: ${{ secrets.FASTLANE_PASSWORD }}
