@@ -12,7 +12,6 @@ platform :ios do
       lock_when_sleeps: false
     )
   match(
-      adhoc: true,
       app_identifier: "com.zsy.actiontest",
       type: "ad-hoc",
       keychain_name: "CI",
