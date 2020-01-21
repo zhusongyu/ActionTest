@@ -15,11 +15,7 @@ jobs:
     - name: Run deploy script
       uses: maddox/actions/ssh@master
       args: /opt/deploy/run
-      secrets: [
-        "PRIVATE_KEY",
-        "HOST",
-        "USER"
-      ]
+      secrets: ['PRIVATE_KEY,HOST,USER']
     
     - name: Setup SSH Keys and known_hosts for fastlane match
       env:
