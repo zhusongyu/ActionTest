@@ -13,7 +13,6 @@ def build_release
     )
     match(
       type: "ad-hoc",
-      readonly: true,
       keychain_name: "CI",
       keychain_password: ENV["MATCH_PASSWORD"]
     )
