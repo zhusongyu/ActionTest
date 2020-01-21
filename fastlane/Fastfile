@@ -1,10 +1,9 @@
 
 default_platform(:ios)
 
+platform :ios do
 
-def build_release
-  if is_ci
-    create_keychain(
+  create_keychain(
       name: "CI",
       password: ENV["MATCH_PASSWORD"],
       default_keychain: true,
@@ -12,35 +11,27 @@ def build_release
       timeout: 3600,
       lock_when_sleeps: false
     )
-    match(
+  match(
       adhoc: true,
       app_identifier: "com.zsy.actiontest",
       type: "ad-hoc",
       keychain_name: "CI",
       keychain_password: ENV["MATCH_PASSWORD"]
     )
-    sh("security list-keychains -d user") 
-    sh("security default-keychain -d user")
-    sh("security find-identity -v -p codesigning CI")
-    disable_automatic_code_signing(
+  sh("security list-keychains -d user") 
+  sh("security default-keychain -d user")
+  sh("security find-identity -v -p codesigning CI")
+  disable_automatic_code_signing(
       path: "ActionTest.xcodeproj",
       team_id: "5B974QYD5M"
     )
-    update_project_provisioning(
+  update_project_provisioning(
       xcodeproj: "ActionTest.xcodeproj",
       target_filter: "ActionTest",
       profile:ENV["sigh_myappid_adhoc_profile-path"],
       code_signing_identity: "Apple Distribution: songyu zhu (5B974QYD5M)",
     )
-  else
-    match(
-      type: "appstore",
-      readonly: true
-    )
-  end
-end
 
-platform :ios do
   desc "pgy archive"
   lane :pgy do
     xcode_select("/Applications/Xcode.app")
