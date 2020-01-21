@@ -11,7 +11,7 @@ def build_release
       timeout: 3600,
       lock_when_sleeps: false
     )
-    adhoc: true,
+    adhoc: true
     match(
       type: "ad-hoc",
       keychain_name: "CI",
