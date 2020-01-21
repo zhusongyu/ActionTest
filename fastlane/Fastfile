@@ -2,36 +2,7 @@
 default_platform(:ios)
 
 platform :ios do
-
-  create_keychain(
-      name: "CI",
-      password: ENV["MATCH_PASSWORD"],
-      default_keychain: true,
-      unlock: true,
-      timeout: 3600,
-      lock_when_sleeps: false
-    )
-  match(
-      app_identifier: "com.zsy.actiontest",
-      type: "adhoc",
-      keychain_name: "CI",
-      keychain_password: ENV["MATCH_PASSWORD"]
-    )
-  sh("security list-keychains -d user") 
-  sh("security default-keychain -d user")
-  sh("security find-identity -v -p codesigning CI")
-  disable_automatic_code_signing(
-      path: "ActionTest.xcodeproj",
-      team_id: "5B974QYD5M"
-    )
-  update_project_provisioning(
-      xcodeproj: "ActionTest.xcodeproj",
-      target_filter: "ActionTest",
-      profile:ENV["sigh_myappid_adhoc_profile-path"],
-      code_signing_identity: "Apple Distribution: songyu zhu (5B974QYD5M)",
-    )
-
-  desc "pgy archive"
+  match(git_url: "https://github.com/zhusongyu/certificates.git", type: "adhoc")
   lane :pgy do
     xcode_select("/Applications/Xcode.app")
     gym(xcargs: "-UseNewBuildSystem=YES",
