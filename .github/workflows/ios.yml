@@ -4,7 +4,6 @@ name: iOS Build
 on: [push]
 
 jobs:
-
   build:
     name: Build phase
     runs-on: macOS-latest
