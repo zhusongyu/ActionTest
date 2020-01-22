@@ -2,7 +2,23 @@
 default_platform(:ios)
 
 platform :ios do
-  match(git_url: "git@github.com:zhusongyu/certificates.git", type: "adhoc", readonly: true, app_identifier: "com.zsy.actiontest")
+
+   create_keychain(
+      name: "CI",
+      password: ENV["MATCH_PASSWORD"],
+      default_keychain: true,
+      unlock: true,
+      timeout: 3600,
+      lock_when_sleeps: false
+    )
+   match(
+        git_url: "git@github.com:zhusongyu/certificates.git", 
+        type: "adhoc", 
+	readonly: true, 
+	app_identifier: "com.zsy.actiontest",
+      	keychain_name: "CI",
+      	keychain_password: ENV["MATCH_PASSWORD"]
+	)
   lane :pgy do
     xcode_select("/Applications/Xcode.app")
     gym(xcargs: "-UseNewBuildSystem=YES",
